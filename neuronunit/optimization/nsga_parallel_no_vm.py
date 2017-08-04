@@ -68,7 +68,6 @@ with dview.sync_imports(): # Causes each of these things to be imported on the w
     import deap as deap
     import functools
     import utilities
-    vm = utilities.VirtualModel()
 
 
 
@@ -194,11 +193,6 @@ import model_parameters
 param_dict = model_parameters.model_params
 
 def vm_to_ind(vm,td):
-    '''
-    Re instanting Virtual Model at every update vmpop
-    is Noneifying its score attribute, and possibly causing a
-    performance bottle neck.
-    '''
 
     ind =[]
     for k in td.keys():
@@ -218,26 +212,13 @@ def vm_to_ind(vm,td):
 
 
 def update_pop(pop, trans_dict):
-    '''
-    inputs a population of genes/alleles, the population size MU, and an optional argument of a rheobase value guess
-    outputs a population of genes/alleles, a population of individual object shells, ie a pickleable container for gene attributes.
-    Rationale, not every gene value will result in a model for which rheobase is found, in which case that gene is discarded, however to
-    compensate for losses in gene population size, more gene samples must be tested for a successful return from a rheobase search.
-    If the tests return are successful these new sampled individuals are appended to the population, and then their attributes are mapped onto
-    corresponding virtual model objects.
-    '''
+
     from itertools import repeat
     import numpy as np
     import copy
     pop = [toolbox.clone(i) for i in pop ]
     #import utilities
     def transform(ind):
-        '''
-        Re instanting Virtual Model at every update vmpop
-        is Noneifying its score attribute, and possibly causing a
-        performance bottle neck.
-        '''
-
         from neuronunit.models import backends
         from neuronunit.models.reduced import ReducedModel
 
