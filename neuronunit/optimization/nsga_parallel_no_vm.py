@@ -13,11 +13,7 @@ except:
 import sys
 import os
 import ipyparallel as ipp
-#from ipyparallel import depend, require, dependent
 
-#profile_hook = cProfile.Profile()
-#atexit.register(ProfExit, profile_hook)
-#profile_hook.enable()
 rc = ipp.Client(profile='default')
 THIS_DIR = os.path.dirname(os.path.realpath('nsga_parallel.py'))
 this_nu = os.path.join(THIS_DIR,'../../')
@@ -26,15 +22,7 @@ from neuronunit import tests
 rc[:].use_cloudpickle()
 inv_pid_map = {}
 dview = rc[:]
-lview = rc.load_balanced_view()
-ar = rc[:].apply_async(os.getpid)
-pids = ar.get_dict()
-inv_pid_map = pids
-pid_map = {}
 
-#Map PIDs onto unique numeric global identifiers via a dedicated dictionary
-for k,v in inv_pid_map.items():
-    pid_map[v] = k
 
 with dview.sync_imports(): # Causes each of these things to be imported on the workers as well as here.
     import get_neab
@@ -192,22 +180,6 @@ def get_trans_dict(param_dict):
 import model_parameters
 param_dict = model_parameters.model_params
 
-def vm_to_ind(vm,td):
-
-    ind =[]
-    for k in td.keys():
-        ind.append(vm.attrs[td[k]])
-    ind.append(vm.rheobase)
-
-
-    from neuronunit.models import backends
-    from neuronunit.models.reduced import ReducedModel
-
-    new_file_path = str(get_neab.LEMS_MODEL_PATH)+str(os.getpid())
-    model = ReducedModel(new_file_path,name=str('vanilla'),backend='NEURON')
-    model.load_model()
-    model.update_run_params(vms.attrs)
-    return ind
 
 
 
@@ -222,8 +194,7 @@ def update_pop(pop, trans_dict):
         from neuronunit.models import backends
         from neuronunit.models.reduced import ReducedModel
 
-        new_file_path = str(get_neab.LEMS_MODEL_PATH)+str(os.getpid())
-        model = ReducedModel(new_file_path,name=str('vanilla'),backend='NEURON')
+        model = ReducedModel(get_neab.LEMS_MODEL_PATH,name=str('vanilla'),backend='NEURON')
         model.load_model()
         param_dict = {}
         for i,j in enumerate(ind):
