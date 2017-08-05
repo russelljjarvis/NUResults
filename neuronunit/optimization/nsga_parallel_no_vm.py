@@ -55,9 +55,6 @@ with dview.sync_imports(): # Causes each of these things to be imported on the w
 
     import deap as deap
     import functools
-    import utilities
-
-
 
     import quantities as pq
     import neuronunit.capabilities as cap
