@@ -13,11 +13,7 @@ except:
 import sys
 import os
 import ipyparallel as ipp
-#from ipyparallel import depend, require, dependent
 
-#profile_hook = cProfile.Profile()
-#atexit.register(ProfExit, profile_hook)
-#profile_hook.enable()
 rc = ipp.Client(profile='default')
 THIS_DIR = os.path.dirname(os.path.realpath('nsga_parallel.py'))
 this_nu = os.path.join(THIS_DIR,'../../')
@@ -26,15 +22,6 @@ from neuronunit import tests
 rc[:].use_cloudpickle()
 inv_pid_map = {}
 dview = rc[:]
-lview = rc.load_balanced_view()
-ar = rc[:].apply_async(os.getpid)
-pids = ar.get_dict()
-inv_pid_map = pids
-pid_map = {}
-
-#Map PIDs onto unique numeric global identifiers via a dedicated dictionary
-for k,v in inv_pid_map.items():
-    pid_map[v] = k
 
 with dview.sync_imports(): # Causes each of these things to be imported on the workers as well as here.
     import get_neab
