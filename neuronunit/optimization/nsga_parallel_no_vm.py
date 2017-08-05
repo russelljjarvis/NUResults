@@ -72,12 +72,7 @@ with dview.sync_imports(): # Causes each of these things to be imported on the w
 def p_imports():
     from neuronunit.models import backends
     from neuronunit.models.reduced import ReducedModel
-    print(get_neab.LEMS_MODEL_PATH)
-    new_file_path = '{0}{1}'.format(str(get_neab.LEMS_MODEL_PATH),int(os.getpid()))
-    print(new_file_path)
-
-    os.system('cp ' + str(get_neab.LEMS_MODEL_PATH)+str(' ') + new_file_path)
-    model = ReducedModel(new_file_path,name='vanilla',backend='NEURON')
+    model = ReducedModel(get_neab.LEMS_MODEL_PATH,name='vanilla',backend='NEURON')
     model.load_model()
     return
 
