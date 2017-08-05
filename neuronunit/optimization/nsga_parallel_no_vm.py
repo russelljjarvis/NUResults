@@ -23,6 +23,7 @@ rc[:].use_cloudpickle()
 inv_pid_map = {}
 dview = rc[:]
 
+
 with dview.sync_imports(): # Causes each of these things to be imported on the workers as well as here.
     import get_neab
     import matplotlib
@@ -53,9 +54,6 @@ with dview.sync_imports(): # Causes each of these things to be imported on the w
     import os.path
 
     import deap as deap
-    import functools
-    import utilities
-
 
 
     import quantities as pq
@@ -74,12 +72,7 @@ with dview.sync_imports(): # Causes each of these things to be imported on the w
 def p_imports():
     from neuronunit.models import backends
     from neuronunit.models.reduced import ReducedModel
-    print(get_neab.LEMS_MODEL_PATH)
-    new_file_path = '{0}{1}'.format(str(get_neab.LEMS_MODEL_PATH),int(os.getpid()))
-    print(new_file_path)
-
-    os.system('cp ' + str(get_neab.LEMS_MODEL_PATH)+str(' ') + new_file_path)
-    model = ReducedModel(new_file_path,name='vanilla',backend='NEURON')
+    model = ReducedModel(get_neab.LEMS_MODEL_PATH,name='vanilla',backend='NEURON')
     model.load_model()
     return
 
@@ -179,22 +172,6 @@ def get_trans_dict(param_dict):
 import model_parameters
 param_dict = model_parameters.model_params
 
-def vm_to_ind(vm,td):
-
-    ind =[]
-    for k in td.keys():
-        ind.append(vm.attrs[td[k]])
-    ind.append(vm.rheobase)
-
-
-    from neuronunit.models import backends
-    from neuronunit.models.reduced import ReducedModel
-
-    new_file_path = str(get_neab.LEMS_MODEL_PATH)+str(os.getpid())
-    model = ReducedModel(new_file_path,name=str('vanilla'),backend='NEURON')
-    model.load_model()
-    model.update_run_params(vms.attrs)
-    return ind
 
 
 
@@ -209,8 +186,7 @@ def update_pop(pop, trans_dict):
         from neuronunit.models import backends
         from neuronunit.models.reduced import ReducedModel
 
-        new_file_path = str(get_neab.LEMS_MODEL_PATH)+str(os.getpid())
-        model = ReducedModel(new_file_path,name=str('vanilla'),backend='NEURON')
+        model = ReducedModel(get_neab.LEMS_MODEL_PATH,name=str('vanilla'),backend='NEURON')
         model.load_model()
         param_dict = {}
         for i,j in enumerate(ind):
