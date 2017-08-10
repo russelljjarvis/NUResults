@@ -7,9 +7,9 @@ import sciunit
 import os
 #Over ride any neuron units in the PYTHON_PATH with this one.
 #only appropriate for development.
-#THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-this_nu = os.path.join(os.getcwd(),'../..')
-sys.path.insert(0,this_nu)
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+#this_nu = os.path.join(os.getcwd(),'../..')
+#sys.path.insert(0,this_nu)
 
 import neuronunit
 from neuronunit import aibs
@@ -19,7 +19,7 @@ try:
     assert os.path.isdir(IZHIKEVICH_PATH)
 except AssertionError:
     # Replace this with the path to your Izhikevich NeuroML2 directory.
-    IZHIKEVICH_PATH = os.path.join(os.getcwd(),'NeuroML2')
+    IZHIKEVICH_PATH = os.path.join(THIS_DIR,'NeuroML2')
 
 LEMS_MODEL_PATH = os.path.join(IZHIKEVICH_PATH,'LEMS_2007One.xml')
 import time
@@ -33,7 +33,7 @@ dataset_id = 354190013  # Internal ID that AIBS uses for a particular Scnn1a-Tg2
                         # Primary visual area, layer 5 neuron.
 #observation = aibs.get_observation(dataset_id,'rheobase')
 
-print(observation)
+#print(observation)
 ne_pickle = os.path.join(os.getcwd(),"neuroelectro.pickle")
 
 if os.path.isfile(ne_pickle):

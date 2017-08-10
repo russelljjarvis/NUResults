@@ -2,7 +2,6 @@
 # Assumption that this file was executed after first executing the bash: ipcluster start -n 8 --profile=default &
 ##
 
-
 import matplotlib # Its not that this file is responsible for doing plotting, but it calls many modules that are, such that it needs to pre-empt
 # setting of an appropriate backend.
 try:
@@ -19,21 +18,27 @@ THIS_DIR = os.path.dirname(os.path.realpath('nsga_parallel.py'))
 this_nu = os.path.join(THIS_DIR,'../../')
 sys.path.insert(0,this_nu)
 from neuronunit import tests
+dview = rc[:]
+def set_pickle_protocol(protocol):
+    import pickle
+    pickle.DEFAULT_PROTOCOL = protocol
+    import cloudpickle
+    cloudpickle.DEFAULT_PROTOCOL = protocol
+    from ipyparallel.serialize import serialize
+    serialize.PICKLE_PROTOCOL = protocol
+#    raise Exception(serialize.PICKLE_PROTOCOL)
+
+dview.apply_sync(set_pickle_protocol,4)
 rc[:].use_cloudpickle()
 inv_pid_map = {}
-dview = rc[:]
 
 
 with dview.sync_imports(): # Causes each of these things to be imported on the workers as well as here.
-    import get_neab
     import matplotlib
+    matplotlib.use('Agg')
+    import get_neab
     import neuronunit
     import model_parameters as modelp
-    try:
-        matplotlib.use('Qt5Agg') # Need to do this before importing neuronunit on a Mac, because OSX backend won't work
-    except:
-        matplotlib.use('Agg') # Need to do this before importing neuronunit on a Mac, because OSX backend won't work
-                          # on the worker threads.
     import pdb
     import array
     import random
@@ -44,7 +49,7 @@ with dview.sync_imports(): # Causes each of these things to be imported on the w
     import quantities as pq
     from deap import algorithms
     from deap import base
-    from deap.benchmarks.tools import diversity, convergence, hypervolume
+    from deap.benchmarks.tools import diversity, convergence
     from deap import creator
     from deap import tools
 
@@ -191,7 +196,7 @@ def update_pop(pop, trans_dict):
         param_dict = {}
         for i,j in enumerate(ind):
             param_dict[trans_dict[i]] = str(j)
-        model.update_run_params(param_dict)
+        model.set_run_params(**param_dict)
         return model
 
     if len(pop) > 0:
