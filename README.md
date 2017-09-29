@@ -1,3 +1,3 @@
 # informatics_poster
-for draw IO flow chart
-And the powerpoint PPX file itself. Violating all sorts of git philosophy by using GH as pure data storage, as opposed to using as the instructions which would generate said data.
+
+Essentially a feature frozen version of the NeuronUnit/Sciunit with NSGA Optimization. The idea is that this repository acts as a seperate branch of neuronunit, a branch where changes to neuronunit/sciunit are not merged in, and therefore plottable results are always readily obtainable.
